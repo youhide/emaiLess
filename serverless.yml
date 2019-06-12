@@ -1,0 +1,26 @@
+service: emailess
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: ${opt:stage}
+  apiKeys:
+    - EmailServiceKeys
+    - ${opt:stage}-EmailServiceKeys
+  usagePlan:
+    throttle:
+      burstLimit: 1
+      rateLimit: 1  
+  
+functions:
+  app:
+    handler: index.handler
+    events:
+      - http: ANY /
+      - http: 
+          path: '{proxy+}'
+          method: any
+          private: true 
+
+plugins:
+  - serverless-offline
