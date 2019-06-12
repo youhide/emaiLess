@@ -1,8 +1,8 @@
 
 const serverless = require('serverless-http');
 const express = require('express');
-const AWS = require('aws-sdk');
 const bodyParser = require('body-parser');
+const AWS = require('aws-sdk');
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -22,12 +22,11 @@ app.post('/send-email', (req, res) => {
   const params = {
     Template: templateName,
     Destination: {
-      ToAddresses: [
-        sendTo
-      ]
+      ToAddresses: sendTo
     },
-    Source: process.env.SENDER_EMAIL,
-    TemplateData: JSON.stringify({})
+    ReplyToAddresses: [process.env.EMAIL_REPLYTO],
+    Source: process.env.EMAIL_SENDER,
+    TemplateData: JSON.stringify(data)
   };
 
   ses.sendTemplatedEmail(params, (err, data) => {
@@ -44,6 +43,7 @@ app.post('/add-template', (req, res) => {
     Template: {
       TemplateName: templateName,
       HtmlPart: body,
+      TextPart: body,
       SubjectPart: subject
     }
   }
