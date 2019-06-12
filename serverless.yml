@@ -3,14 +3,20 @@ service: emailess
 provider:
   name: aws
   runtime: nodejs8.10
-  stage: ${opt:stage}
+  stage: ${env:STAGE}
+  region: ${env:REGION}
   apiKeys:
     - EmailServiceKeys
-    - ${opt:stage}-EmailServiceKeys
+    - ${env:STAGE}-EmailServiceKeys
   usagePlan:
     throttle:
       burstLimit: 1
       rateLimit: 1  
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - ses:SendTemplatedEmail
+      Resource: "*"      
   
 functions:
   app:
@@ -24,3 +30,4 @@ functions:
 
 plugins:
   - serverless-offline
+  - serverless-dotenv-plugin

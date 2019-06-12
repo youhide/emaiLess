@@ -3,14 +3,13 @@ const serverless = require('serverless-http');
 const express = require('express');
 const AWS = require('aws-sdk');
 const bodyParser = require('body-parser');
-require('dotenv').config();
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 const ses = new AWS.SES({
-  region: process.env.AWS_REGION
+  region: process.env.REGION
 });
 
 app.get('/', (req, res) => {
